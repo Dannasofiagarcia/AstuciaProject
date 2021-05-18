@@ -1,0 +1,185 @@
+package view;
+
+import java.io.IOException;
+
+import control.GameController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+public class GameWindow extends Stage{
+
+
+	//UI Elements
+	private Scene scene;
+	private GameController control;
+	private Label[][] radar;
+	private Button[][] ataque;
+	private TextField nameTF;
+	private Button sendNameBtn;
+	private Label opponentLabel;
+	private Label statusLabel;
+	private Button surrenderBtn;
+	private GridPane atackGrid;
+	private Button restartBtn;
+
+
+	public GameWindow() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("GameWindow.fxml"));
+			Parent parent = loader.load();
+			scene = new Scene(parent, 487,421);
+			this.setScene(scene);
+
+			//Referencias
+			radar = new Label[3][3];
+			radar[0][0] = (Label) loader.getNamespace().get("radar00");
+			radar[0][1] = (Label) loader.getNamespace().get("radar01");
+			radar[0][2] = (Label) loader.getNamespace().get("radar02");
+			radar[1][0] = (Label) loader.getNamespace().get("radar10");
+			radar[1][1] = (Label) loader.getNamespace().get("radar11");
+			radar[1][2] = (Label) loader.getNamespace().get("radar12");
+			radar[2][0] = (Label) loader.getNamespace().get("radar20");
+			radar[2][1] = (Label) loader.getNamespace().get("radar21");
+			radar[2][2] = (Label) loader.getNamespace().get("radar22");
+
+			ataque = new Button[3][3];
+			ataque[0][0] = (Button) loader.getNamespace().get("ataque00");
+			ataque[0][1] = (Button) loader.getNamespace().get("ataque01");
+			ataque[0][2] = (Button) loader.getNamespace().get("ataque02");
+			ataque[1][0] = (Button) loader.getNamespace().get("ataque10");
+			ataque[1][1] = (Button) loader.getNamespace().get("ataque11");
+			ataque[1][2] = (Button) loader.getNamespace().get("ataque12");
+			ataque[2][0] = (Button) loader.getNamespace().get("ataque20");
+			ataque[2][1] = (Button) loader.getNamespace().get("ataque21");
+			ataque[2][2] = (Button) loader.getNamespace().get("ataque22");
+
+			nameTF = (TextField) loader.getNamespace().get("nameTF");
+			sendNameBtn = (Button) loader.getNamespace().get("sendNameBtn");
+			opponentLabel = (Label) loader.getNamespace().get("opponentLabel");
+			statusLabel = (Label) loader.getNamespace().get("statusLabel");
+			surrenderBtn = (Button) loader.getNamespace().get("surrenderBtn");
+			atackGrid = (GridPane) loader.getNamespace().get("atackGrid");
+			restartBtn = (Button) loader.getNamespace().get("restartBtn");
+
+
+			control = new GameController(this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public Label[][] getRadar() {
+		return radar;
+	}
+
+
+	public Button[][] getAtaque() {
+		return ataque;
+	}
+
+
+	public TextField getNameTF() {
+		return nameTF;
+	}
+
+
+	public Button getSendNameBtn() {
+		return sendNameBtn;
+	}
+
+
+	public Label getOpponentLabel() {
+		return opponentLabel;
+	}
+
+
+	public Label getStatusLabel() {
+		return statusLabel;
+	}
+
+	public Button getSurrenderBtn() { return surrenderBtn; }
+
+	public Button getRestartBtn() { return restartBtn; }
+
+	public GridPane getAtackGrid() { return atackGrid; }
+
+	//UI Actions
+	public void drawAttackInRadar(int fil, int col) {
+		radar[fil][col].setStyle("-fx-background-color: red;");
+	}
+
+	public void drawWeakPointInRadar(int fil, int col) {
+		radar[fil][col].setStyle("-fx-background-color: yellow;");
+	}
+
+	public void changeAdversaryName(String name){
+		getOpponentLabel().setText(name);
+	}
+
+	public void disableSendName(){
+		getNameTF().setDisable(true);
+	}
+
+	public void drawAttack(int pos0, int pos1){
+		atackGrid.setVisible(true);
+		drawAttackInRadar(pos0, pos1);
+	}
+
+	public void restart(){
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				radar[i][j].setStyle("-fx-background-color:  #2389FA;");
+			}
+		}
+
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				ataque[i][j].setVisible(true);
+			}
+		}
+		atackGrid.setDisable(false);
+		opponentLabel.setText("Loremp ipsum");
+		nameTF.setDisable(false);
+		nameTF.setText("");
+		restartBtn.setDisable(true);
+		statusLabel.setText("En juego");
+		surrenderBtn.setDisable(false);
+	}
+
+	public void disableAttackInRadar(int fil, int col){
+		ataque[fil][col].setVisible(false);
+	}
+
+	public void updateStatus(String newStatus){
+		statusLabel.setText(newStatus);
+	}
+
+	public void disableGame(){
+		atackGrid.setDisable(true);
+	}
+
+	public void myTurn(){
+		atackGrid.setDisable(false);
+	}
+
+	public void notMyTurn(){
+		atackGrid.setDisable(true);
+	}
+
+	public void activateRestartBtn(){
+		restartBtn.setDisable(false);
+	}
+
+	public void desactivateSurrender(){
+		surrenderBtn.setDisable(true);
+	}
+
+
+}
